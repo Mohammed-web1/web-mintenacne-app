@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestion des Utilisateurs - Maintenance</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-light bg-light">
+  <a class="navbar-brand" href="file:///C:/Users/mohammed/Desktop/final%20prjt%20stage/interface_admin/admin.html">Interface Admin</a>
+</nav>
+
+<div class="container-fluid mt-3">
+  <!-- Content goes here -->
+  <h1 class="mb-4">Gestion des Utilisateurs</h1>
+  
+  <!-- Button for adding new user -->
+  <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addUserModal">Ajouter Utilisateur</button>
+  
+  <!-- Table of existing users -->
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Nom d'utilisateur</th>
+          <th scope="col">Mot de passe</th>
+          <th scope="col">Rôle</th>
+          <th scope="col">Date de création</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="userTableBody">
+        <!-- Existing users will be listed dynamically here -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addUserModalLabel">Ajouter Utilisateur</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="inputUsername">Nom d'utilisateur</label>
+            <input type="text" class="form-control" id="inputUsername" placeholder="Entrez le nom d'utilisateur">
+          </div>
+          <div class="form-group">
+            <label for="inputPassword">Mot de passe</label>
+            <input type="password" class="form-control" id="inputPassword" placeholder="Entrez le mot de passe">
+          </div>
+          <div class="form-group">
+            <label for="inputRole">Rôle</label>
+            <select class="form-control" id="inputRole">
+              <option>Technicien</option>
+              <option>Employé</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" id="saveUserBtn">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit User Modal -->
+<div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editUserModalLabel">Modifier Utilisateur</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="editUsername">Nom d'utilisateur</label>
+            <input type="text" class="form-control" id="editUsername" readonly>
+          </div>
+          <div class="form-group">
+            <label for="editPassword">Mot de passe</label>
+            <input type="password" class="form-control" id="editPassword" placeholder="Entrez le nouveau mot de passe">
+          </div>
+          <div class="form-group">
+            <label for="editRole">Rôle</label>
+            <select class="form-control" id="editRole">
+              <option>Technicien</option>
+              <option>Employé</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" id="updateUserBtn">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript libraries -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+  // Dummy data for testing
+  var users = [
+    { id: 1, username: "technicien1", password: "password1", role: "Technicien", created_at: "2024-06-16" },
+    { id: 2, username: "employé1", password: "password2", role: "Employé", created_at: "2024-06-17" },
+    { id: 3, username: "technicien2", password: "password3", role: "Technicien", created_at: "2024-06-18" }
+  ];
+
+  // Function to display users in the table
+  function displayUsers() {
+    var userTableBody = document.getElementById("userTableBody");
+    userTableBody.innerHTML = ""; // Clear the table body first
+
+    users.forEach(function(user) {
+      var row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${user.username}</td>
+        <td>${user.password}</td>
+<td>${user.role}</td>
+<td>${user.created_at}</td>
+<td>
+  <button type="button" class="btn btn-warning btn-sm edit-user-btn" data-toggle="modal" data-target="#editUserModal" data-id="${user.id}">Modifier</button>
+  <button type="button" class="btn btn-danger btn-sm delete-user-btn" data-id="${user.id}">Supprimer</button>
+</td>
+`;
+userTableBody.appendChild(row);
+});
+}
+
+// Function to add a new user
+document.getElementById("saveUserBtn").addEventListener("click", function(event) {
+event.preventDefault(); // Prevent form submission
+
+var username = document.getElementById("inputUsername").value;
+var password = document.getElementById("inputPassword").value;
+var role = document.getElementById("inputRole").value;
+var created_at = new Date().toLocaleDateString(); // Get current date
+
+// Generate a unique ID for the new user (for demonstration purposes)
+var id = users.length + 1;
+
+// Add the new user to the list
+users.push({ id: id, username: username, password: password, role: role, created_at: created_at });
+
+// Close the modal
+$('#addUserModal').modal('hide');
+
+// Display the updated list
+displayUsers();
+});
+
+// Function to populate edit user modal with user data
+$('#editUserModal').on('show.bs.modal', function (event) {
+var button = $(event.relatedTarget); // Button that triggered the modal
+var userId = parseInt(button.data('id')); // Extract info from data-* attributes
+var modal = $(this);
+
+// Find user data by id
+var user = users.find(function(user) {
+return user.id === userId;
+});
+
+// Populate the modal fields with user data
+modal.find('.modal-body #editUsername').val(user.username);
+modal.find('.modal-body #editPassword').val("");
+modal.find('.modal-body #editRole').val(user.role);
+modal.find('.modal-footer #updateUserBtn').attr("data-id", user.id);
+});
+
+// Function to update a user
+document.getElementById("updateUserBtn").addEventListener("click", function(event) {
+event.preventDefault(); // Prevent form submission
+
+var userId = parseInt(event.target.getAttribute("data-id"));
+var password = document.getElementById("editPassword").value;
+var role = document.getElementById("editRole").value;
+
+// Update the user in the list
+users.forEach(function(user) {
+if (user.id === userId) {
+user.password = password || user.password; // Keep the old password if no new password is provided
+user.role = role;
+}
+});
+
+// Close the modal
+$('#editUserModal').modal('hide');
+
+// Display the updated list
+displayUsers();
+});
+
+// Function to delete a user
+document.addEventListener('click', function(event) {
+if (event.target.classList.contains('delete-user-btn')) {
+var userId = parseInt(event.target.getAttribute('data-id'));
+users = users.filter(function(user) {
+return user.id !== userId;
+});
+displayUsers();
+}
+});
+
+// Initial display of users
+displayUsers();
+</script>
+</body>
+</html>

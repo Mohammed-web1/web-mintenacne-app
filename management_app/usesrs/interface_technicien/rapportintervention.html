@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rapports d'Intervention</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">Rapports d'Intervention</a>
+</nav>
+
+<div class="container-fluid mt-3">
+  <h1 class="mb-4">Fournir des Rapports Après Intervention</h1>
+  
+  <!-- Section for submitting intervention reports -->
+  <div class="card mb-4">
+    <div class="card-header">
+      Soumettre un Rapport d'Intervention
+    </div>
+    <div class="card-body">
+      <form id="interventionReportForm">
+        <div class="form-group">
+          <label for="interventionId">ID de l'Intervention</label>
+          <input type="text" class="form-control" id="interventionId" placeholder="Entrez l'ID de l'intervention">
+        </div>
+        <div class="form-group">
+          <label for="actionsPerformed">Actions Effectuées</label>
+          <textarea class="form-control" id="actionsPerformed" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="partsUsed">Pièces Utilisées</label>
+          <textarea class="form-control" id="partsUsed" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Soumettre</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Section for viewing intervention reports -->
+  <div class="card mb-4">
+    <div class="card-header">
+      Rapports d'Intervention
+    </div>
+    <div class="card-body">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID de l'Intervention</th>
+            <th>Actions Effectuées</th>
+            <th>Pièces Utilisées</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="interventionReportsTable">
+          <!-- Intervention reports will be displayed here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- View Intervention Report Modal -->
+<div class="modal fade" id="viewInterventionReportModal" tabindex="-1" role="dialog" aria-labelledby="viewInterventionReportModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewInterventionReportModalLabel">Rapport d'Intervention</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="reportContent">
+        <!-- Report content will be displayed here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" id="downloadReportBtn">Télécharger en PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script>
+  $(document).ready(function() {
+    var interventionReports = [];
+
+    // Function to submit an intervention report
+    $('#interventionReportForm').submit(function(event) {
+      event.preventDefault();
+      var interventionId = $('#interventionId').val();
+      var actionsPerformed = $('#actionsPerformed').val();
+      var partsUsed = $('#partsUsed').val();
+
+      var newReport = {
+        id: interventionId,
+        actions: actionsPerformed,
+        parts: partsUsed
+      };
+      interventionReports.push(newReport);
+
+      // Create a new row in the report table
+      var newRow = `
+        <tr data-report-id="${newReport.id}">
+          <td>${newReport.id}</td>
+          <td>${newReport.actions}</td>
+          <td>${newReport.parts}</td>
+          <td>
+            <button type="button" class="btn btn-primary btn-sm view-report-btn" data-toggle="modal" data-target="#viewInterventionReportModal">Voir</button>
+          </td>
+        </tr>
+      `;
+      $('#interventionReportsTable').append(newRow);
+
+      // Reset form fields
+      $('#interventionId').val('');
+      $('#actionsPerformed').val('');
+      $('#partsUsed').val('');
+    });
+
+    // View Report Button Clicked
+    $('#interventionReportsTable').on('click', '.view-report-btn', function() {
+      var reportId = parseInt($(this).closest('tr').data('report-id'));
+      var report = interventionReports.find(function(report) {
+        return report.id === reportId;
+      });
+
+      // Display report content in the modal
+      var reportContent = `
+        <p><strong>ID de l'Intervention:</strong> ${report.id}</p>
+        <p><strong>Actions Effectuées:</strong></p>
+        <p>${report.actions}</p>
+        <p><strong>Pièces Utilisées:</strong></p>
+        <p>${report.parts}</p>
+      `;
+      $('#reportContent').html(reportContent);
+      $('#downloadReportBtn').attr('data-report-id', report.id);
+    });
+
+    // Download Report Button Clicked
+    $('#downloadReportBtn').click(function() {
+      var reportId = parseInt($(this).attr('data-report-id'));
+      var report = interventionReports.find(function(report) {
+        return report.id === reportId;
+      });
+
+      // Create PDF
+      var doc = new jsPDF();
+      doc.text(`ID de l'Intervention: ${report.id}`, 10, 10);
+      doc.text('Actions Effectuées:', 10, 20);
+      doc.text(report.actions, 10, 30);
+      doc.text('Pièces Utilisées:', 10, 50);
+      doc.text(report.parts, 10, 60);
+      doc.save(`Rapport_Intervention_${report.id}.pdf`);
+    });
+  });
+</script>
+</body>
+</html>

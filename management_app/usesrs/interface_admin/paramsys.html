@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paramétrage du Système</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+  <a class="navbar-brand" href="file:///C:/Users/mohammed/Desktop/final%20prjt%20stage/interface_admin/admin.html">Interface Admin</a>
+</nav>
+
+<div class="container-fluid mt-3">
+  <h1 class="mb-4">Configurer les Paramètres</h1>
+  
+  <!-- Section for configuring intervention types -->
+  <div class="card mb-4">
+    <div class="card-header">
+      Types d'Interventions
+    </div>
+    <div class="card-body">
+      <!-- Form to add/edit/delete intervention types -->
+      <form id="interventionTypesForm">
+        <div class="form-group">
+          <label for="interventionType">Nouveau Type d'Intervention</label>
+          <input type="text" class="form-control" id="interventionType" placeholder="Entrez le nouveau type d'intervention">
+        </div>
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+      </form>
+
+      <!-- Table to display existing intervention types -->
+      <table class="table mt-3">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Type d'Intervention</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="interventionTypesTable">
+          <!-- Existing intervention types will be displayed here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Other sections for configuring application parameters can be added here -->
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+  $(document).ready(function() {
+    var interventionTypeCounter = 0;
+    var interventionTypes = [];
+
+    // Function to add intervention type
+    $('#interventionTypesForm').submit(function(event) {
+      event.preventDefault();
+      var newInterventionType = $('#interventionType').val();
+
+      // Add the intervention type to the array
+      interventionTypeCounter++;
+      var newType = {
+        id: interventionTypeCounter,
+        name: newInterventionType
+      };
+      interventionTypes.push(newType);
+
+      // Append the new type to the table
+      var newRow = `
+        <tr>
+          <td>${newType.id}</td>
+          <td>${newType.name}</td>
+          <td>
+            <button type="button" class="btn btn-warning btn-sm edit-intervention-type-btn" data-type-id="${newType.id}" data-toggle="modal" data-target="#editInterventionTypeModal">Modifier</button>
+            <button type="button" class="btn btn-danger btn-sm delete-intervention-type-btn" data-type-id="${newType.id}">Supprimer</button>
+          </td>
+        </tr>
+      `;
+      $('#interventionTypesTable').append(newRow);
+
+      // Clear the input field
+      $('#interventionType').val('');
+    });
+
+    // Edit Intervention Type Button Clicked
+    $(document).on('click', '.edit-intervention-type-btn', function() {
+      var typeId = parseInt($(this).data('type-id'));
+      var type = interventionTypes.find(function(type) {
+        return type.id === typeId;
+      });
+      $('#editInterventionTypeModal #editInterventionType').val(type.name);
+      $('#editInterventionTypeModal #editInterventionType').data('type-id', typeId);
+    });
+
+    // Save Edited Intervention Type Button Clicked
+    $('#saveEditedInterventionTypeBtn').click(function() {
+      var typeId = parseInt($('#editInterventionType').data('type-id'));
+      var newName = $('#editInterventionType').val();
+      var typeIndex = interventionTypes.findIndex(function(type) {
+        return type.id === typeId;
+      });
+      if (typeIndex !== -1) {
+        interventionTypes[typeIndex].name = newName;
+        $(`#interventionTypesTable tr[data-type-id="${typeId}"] td:eq(1)`).text(newName);
+      }
+      $('#editInterventionTypeModal').modal('hide');
+    });
+
+    // Delete Intervention Type Button Clicked
+    $(document).on('click', '.delete-intervention-type-btn', function() {
+      var typeId = parseInt($(this).data('type-id'));
+      var index = interventionTypes.findIndex(function(type) {
+        return type.id === typeId;
+      });
+      if (index !== -1) {
+        interventionTypes.splice(index, 1);
+        $(`#interventionTypesTable tr[data-type-id="${typeId}"]`).remove();
+      }
+    });
+  });
+</script>
+
+<!-- Edit Intervention Type Modal -->
+<div class="modal fade" id="editInterventionTypeModal" tabindex="-1
+" role="dialog" aria-labelledby="editInterventionTypeModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editInterventionTypeModalLabel">Modifier le Type d'Intervention</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="editInterventionTypeForm">
+          <div class="form-group">
+            <label for="editInterventionType">Nouveau Nom</label>
+            <input type="text" class="form-control" id="editInterventionType">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" id="saveEditedInterventionTypeBtn">Sauvegarder</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

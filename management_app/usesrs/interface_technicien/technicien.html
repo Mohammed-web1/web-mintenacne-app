@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interface Technicien</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: Arial, sans-serif;
+    }
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 250px;
+      padding-top: 60px;
+      background-color: #343a40;
+      color: #fff;
+      transition: all 0.3s;
+    }
+    #sidebar .nav-link {
+      color: #adb5bd;
+    }
+    #sidebar .nav-link:hover {
+      color: #fff;
+    }
+    #content {
+      margin-left: 250px;
+      padding: 20px;
+    }
+    .navbar-brand {
+      color: #007bff;
+      font-weight: bold;
+    }
+    .navbar-brand:hover {
+      color: #0056b3;
+    }
+    .navbar-nav .nav-link {
+      color: #6c757d;
+    }
+    .navbar-nav .nav-link:hover {
+      color: #333;
+    }
+    #logout-link {
+      color: #dc3545;
+    }
+    #logout-link:hover {
+      color: #bd2130;
+    }
+    .card {
+      border: none;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+    .calendar {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    .calendar th,
+    .calendar td {
+      border: 1px solid #dee2e6;
+      padding: 10px;
+      text-align: center;
+    }
+    .calendar th {
+      background-color: #f8f9fa;
+      font-size: 16px;
+    }
+    .calendar td {
+      cursor: pointer;
+      transition: background-color 0.3s;
+      position: relative;
+      font-size: 14px;
+    }
+    .calendar td:hover {
+      background-color: #e9ecef;
+    }
+    .calendar .today {
+      background-color: #007bff;
+      color: #fff;
+    }
+    .intervention {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 5px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+      max-width: 150px;
+    }
+    .intervention-info {
+      font-size: 12px;
+      line-height: 1.2;
+    }
+    .intervention-info strong {
+      font-weight: bold;
+    }
+    .attente {
+      background-color: #ffc107;
+    }
+    .encours {
+      background-color: #17a2b8;
+    }
+    .complete {
+      background-color: #28a745;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-light bg-light fixed-top">
+  <a class="navbar-brand" href="#">Interface Technicien </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" id="logout-link" href="file:///C:/Users/mohammed/Desktop/final%20prjt%20stage/home_page/index.html">Déconnexion</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div id="sidebar">
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link" href="file:///C:/Users/mohammed/Desktop/final%20prjt%20stage/interface_technicien/consuletintervention.html">Consultation des intervention</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="file:///C:/Users/mohammed/Desktop/final%20prjt%20stage/interface_technicien/mizajour.html">mise a jour des interventions </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="file:///C:/Users/mohammed/Desktop/final%20prjt%20stage/interface_technicien/rapportintervention.html">Rapports d'intervention </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">chatbot</a>
+    </li>
+
+  </ul>
+</div>
+
+<div id="content">
+  <h1 class="mb-4">Panel Technicien</h1>
+  <div class="card">
+    <div class="card-body">
+      <h2 class="card-title mb-4">Calendrier</h2>
+      <div class="table-responsive">
+        <table class="calendar">
+          <thead>
+            <tr>
+              <th>Lun</th>
+              <th>Mar</th>
+              <th>Mer</th>
+              <th>Jeu</th>
+              <th>Ven</th>
+              <th>Sam</th>
+              <th>Dim</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td></td>
+              <td></td>
+              <td class="today">
+                <div class="intervention attente">
+                  <div class="intervention-info">
+                    <strong>Intervention en attente</strong><br>
+                    Technicien: John Doe
+                  </div>
+                </div>
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <!-- Add more rows here to represent other interventions -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
